@@ -167,7 +167,7 @@ public class MainController {
 		service_t.deleteTailor(id); // Implement this method in service
 		return "redirect:/showTailor"; // Redirect to customer list after update
 	}
-
+//editTailor
 	@GetMapping("/editTailor/{id}")
 	public String showEditTailorForm(@PathVariable Long id, Model model) {
 		Tailor tailor = service_t.getTailorById(id);
@@ -177,7 +177,7 @@ public class MainController {
 		model.addAttribute("tailor", tailor); // Make sure the attribute name is "tailor"
 		return "EditTailor"; // Ensure this matches your Thymeleaf template name
 	}
-
+// updateTailor
 	@PostMapping("/updateTailor/{id}")
 	public String updateTailor(@PathVariable("id") Long id, @ModelAttribute("tailor") Tailor updatedTailor) {
 		service_t.updateTailor(updatedTailor);
