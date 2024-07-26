@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width = device-width, initial-scale = 1, shrink-to-fit=no">
+    <title>Customer List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 10px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .search-container input[type=text] {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 50%;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <h2>Customer List</h2>
+
+    <!-- Search bar -->
+    <div class="search-container">
+        <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="Search by name, address, mobile number...">
+    </div>
+
+    <!-- Customer table -->
+    <table id="customerTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Mobile Number</th>
+                <th>Type</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop through each customer -->
+            <tr th:each="customer : ${customerList}">
+                <td th:text="${customer.customer_id}"></td>
+                <td th:text="${customer.customer_name}"></td>
+                <td th:text="${customer.customer_address}"></td>
+                <td th:text="${customer.customer_mobileNo}"></td>
+                <td th:text="${customer.customer_type}"></td>
+                <td th:text="${customer.customer_date}"></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- JavaScript for search functionality -->
+    <script th:inline="javascript">
+        function searchTable() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("customerTable");
+            tr = table.getElementsByTagName("tr");
+
+            // Loop through all table rows, and hide those that don't match the search query
+            for (i = 1; i < tr.length; i++) { // Start from 1 to skip header row
+                var found = false; // Flag to determine if the row matches the search
+                // Loop through each column in the current row
+                for (var j = 1; j < tr[i].cells.length; j++) { // Start from 1 to skip ID column
+                    td = tr[i].getElementsByTagName("td")[j];
+                    if (td) {
+                        txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            found = true; // Mark as found if any column matches the search
+                            break; // Break out of the inner loop early
+                        }
+                    }
+                }
+                // Show or hide the row based on whether it matched the search
+                if (found) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    

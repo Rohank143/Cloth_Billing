@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Customer List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 20px;
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+            font-weight: bold;
+        }
+        td {
+            background-color: #fff;
+            color: #333;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .search-container {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+        .search-container input[type=text] {
+            padding: 8px;
+            margin-top: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .action-buttons {
+            margin-bottom: 10px;
+        }
+        .action-buttons a {
+            display: inline-block;
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            margin-right: 10px;
+        }
+        .active-button {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .non-active-button {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
+    <script>
+        function searchFunction() {
+            // Declare variables
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("customerTable");
+            tr = table.getElementsByTagName("tr");
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[1]; // Column index for customer name
+
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        function showActiveCustomers() {
+            var table, tr, td, i, activeType;
+            table = document.getElementById("customerTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[7]; // Column index for ActiveType
+
+                if (td) {
+                    activeType = td.textContent || td.innerText;
+                    if (activeType.trim() === "Active") {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        function showNonActiveCustomers() {
+            var table, tr, td, i, activeType;
+            table = document.getElementById("customerTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[7]; // Column index for ActiveType
+
+                if (td) {
+                    activeType = td.textContent || td.innerText;
+                    if (activeType.trim() === "Non_Active") {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+
+        function showAllCustomers() {
+            var table, tr, i;
+            table = document.getElementById("customerTable");
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 0; i < tr.length; i++) {
+                tr[i].style.display = "";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>Customer List</h2>
+    <div class="search-container">
+        <input type="text" id="searchInput" onkeyup="searchFunction()" placeholder="Search by customer name...">
+    </div>
+    <div class="action-buttons">
+        <a href="#" class="active-button" onclick="showActiveCustomers()">Active Customers</a>
+        <a href="#" class="non-active-button" onclick="showNonActiveCustomers()">Non-Active Customers</a>
+        <a href="#" onclick="showAllCustomers()">Show All</a>
+    </div>
+    <table id="customerTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>State</th>
+                <th>City</th>
+                <th>Address</th>
+                <th>Mobile Number</th>
+                <th>Type</th>
+                <th>Active Type</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loop through each customer -->
+            <tr th:each="customer : ${customerList}">
+                <td th:text="${customer.customer_id}"></td>
+                <td th:text="${customer.customer_name}"></td>
+                <td th:text="${customer.customer_State}"></td>
+                <td th:text="${customer.customer_City}"></td>
+                <td th:text="${customer.customer_address}"></td>
+                <td th:text="${customer.customer_mobileNo}"></td>
+                <td th:text="${customer.customer_type}"></td>
+                <td th:text="${customer.activeType}"></td>
+                <td th:text="${#dates.format(customer.customer_date, 'dd/MM/yyyy')}"></td>
+                <td>
+                    <a th:href="@{/editCustomer/{id}(id=${customer.customer_id})}" style="display: inline-block; padding: 8px 12px; text-decoration: none; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; text-align: center;">Edit</a>
+                    <a th:href="@{/deleteCustomer/{id}(id=${customer.customer_id})}" onclick="return confirm('Are you sure you want to delete?')" style="display: inline-block; padding: 8px 12px; text-decoration: none; background-color: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer; text-align: center;">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

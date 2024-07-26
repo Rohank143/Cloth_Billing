@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Customer Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F2F2F2;
+            padding: 20px;
+        }
+        #customerForm {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+        }
+        button[type="submit"]:hover {
+            background-color: #45A049;
+        }
+        .success-message {
+            display: none;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+        .error-message {
+            color: red;
+            margin-top: 5px;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .alert-danger {
+            color: #721C24;
+            background-color: #F8D7DA;
+            border-color: #F5C6CB;
+        }
+    </style>
+</head>
+<body>
+    <h2>Customer Information Form</h2>
+    <div id="customerForm">
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+            <span th:text="${errorMessage}"></span>
+        </div>
+        <form th:object="${customer}" method="post" onsubmit="return validateForm()" action="#" th:action="@{/SaveCustomer}">
+            <input type="hidden" th:field="*{customer_id}">
+            <label for="customerName">Name:</label>
+            <input type="text" id="customerName" th:field="*{customer_name}" required><br>
+            
+            <label for="customerState">State:</label>
+            <select id="stateSelect" th:field="*{Customer_State}" onchange="populateCities()">
+                <option value="">Select a state</option>
+                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                <option value="Assam">Assam</option>
+                <option value="Bihar">Bihar</option>
+                <option value="Chhattisgarh">Chhattisgarh</option>
+                <option value="Goa">Goa</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="Haryana">Haryana</option>
+                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                <option value="Jharkhand">Jharkhand</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Kerala">Kerala</option>
+                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Manipur">Manipur</option>
+                <option value="Meghalaya">Meghalaya</option>
+                <option value="Mizoram">Mizoram</option>
+                <option value="Nagaland">Nagaland</option>
+                <option value="Odisha">Odisha</option>
+                <option value="Punjab">Punjab</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="Sikkim">Sikkim</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Telangana">Telangana</option>
+                <option value="Tripura">Tripura</option>
+                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                <option value="Uttarakhand">Uttarakhand</option>
+                <option value="West Bengal">West Bengal</option>
+                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                <option value="Chandigarh">Chandigarh</option>
+                <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+                <option value="Daman and Diu">Daman and Diu</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Lakshadweep">Lakshadweep</option>
+                <option value="Puducherry">Puducherry</option>
+            </select>
+            
+            <label for="customerCity">City:</label>
+            <select id="citySelect" th:field="*{Customer_City}">
+                <option value="">Select a city</option>
+            </select>
+
+            <label for="customerAddress">Address:</label>
+            <input type="text" id="customerAddress" th:field="*{customer_address}"><br>
+            <label for="customerMobileNo">Mobile Number:</label>
+            <input type="text" id="customerMobileNo" th:field="*{customer_mobileNo}" onblur="checkPhoneNumber()"><br>
+            <span id="phoneError" class="error-message"></span><br>
+            <label for="customerType">Type:</label>
+            <select id="customerType" th:field="*{customer_type}">
+                <option value="Regular">Regular</option>
+                <option value="Premium">New</option>
+            </select><br>
+            
+            <label>
+                <input type="checkbox" id="ActiveType_Active" name="activeType" th:field="*{activeType}" value="Active" checked>
+                Active
+            </label><br>
+            <label>
+                <input type="checkbox" id="ActiveType_NonActive" name="activeType" th:field="*{activeType}" value="Non_Active">
+                Non-Active
+            </label><br>
+            <br>
+            <label for="customerDate">Date:</label>
+            <input type="date" id="customerDate" th:field="*{customer_date}"><br>
+            <button type="submit">Save</button>
+        </form>
+    
+        <div class="success-message" id="successMessage">
+            Customer saved successfully!
+        </div>
+    </div>
+    <script th:inline="javascript">
+        function populateCities() {
+            var stateSelect = document.getElementById("stateSelect");
+            var citySelect = document.getElementById("citySelect");
+            var state = stateSelect.value;
+
+            citySelect.innerHTML = '<option value="">Select a city</option>';
+
+			var citiesByState = {
+			    "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore", "Kurnool", "Rajahmundry", "Tirupati", "Kakinada", "Anantapur", "Vizianagaram", "Eluru", "Ongole", "Srikakulam", "Chittoor", "Kadapa", "Proddatur", "Adoni", "Tenali", "Hindupur", "Bhimavaram"],
+			    "Arunachal Pradesh": ["Itanagar", "Naharlagun", "Pasighat", "Tawang", "Ziro", "Bomdila", "Aalo", "Tezu", "Roing", "Changlang", "Khonsa", "Namsai", "Yingkiong", "Seppa"],
+			    "Assam": ["Guwahati", "Dibrugarh", "Silchar", "Jorhat", "Nagaon", "Tinsukia", "Tezpur", "Bongaigaon", "Karimganj", "Sivasagar", "Barpeta", "Goalpara", "Lakhimpur", "Dhubri", "Diphu", "North Lakhimpur", "Hailakandi", "Dhekiajuli"],
+			    "Bihar": ["Patna", "Gaya", "Bhagalpur", "Muzaffarpur", "Purnia", "Darbhanga", "Bihar Sharif", "Arrah", "Begusarai", "Katihar", "Munger", "Chhapra", "Saharsa", "Hajipur", "Dehri", "Siwan", "Motihari", "Nawada", "Bettiah", "Bagaha", "Sasaram", "Jamui", "Sitamarhi", "Supaul", "Madhubani", "Samastipur", "Buxar", "Kishanganj", "Bhabua", "Aurangabad", "Jehanabad", "Lakhisarai"],
+			    "Chhattisgarh": ["Raipur", "Bhilai", "Bilaspur", "Korba", "Durg", "Rajnandgaon", "Jagdalpur", "Raigarh", "Ambikapur", "Dhamtari", "Mahasamund", "Chirmiri", "Bhatapara", "Kawardha", "Dongargarh", "Manendragarh", "Sakti", "Sukma"],
+			    "Goa": ["Panaji", "Vasco da Gama", "Margao", "Mapusa", "Ponda", "Bicholim", "Curchorem", "Cuncolim", "Valpoi", "Pernem", "Sanquelim", "Quepem", "Sanguem"],
+			    "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", "Junagadh", "Gandhinagar", "Gandhidham", "Anand", "Nadiad", "Morbi", "Surendranagar", "Mehsana", "Bharuch", "Vapi", "Navsari", "Porbandar", "Anjar", "Botad", "Veraval", "Palanpur", "Gondal", "Godhra", "Patan", "Kalol", "Deesa", "Amreli", "Bhuj", "Jetpur", "Dahod", "Valsad", "Viramgam", "Modasa", "Mahuva", "Savarkundla", "Sidhpur"],
+			    "Haryana": ["Faridabad", "Gurgaon", "Panipat", "Ambala", "Yamunanagar", "Rohtak", "Hisar", "Karnal", "Sonipat", "Panchkula", "Bhiwani", "Sirsa", "Bahadurgarh", "Jind", "Rewari", "Mahendragarh", "Kaithal", "Palwal", "Hansi", "Ratia", "Tohana", "Narwana", "Gohana", "Jhajjar"],
+			    "Himachal Pradesh": ["Shimla", "Mandi", "Dharamshala", "Solan", "Kullu", "Hamirpur", "Bilaspur", "Chamba", "Nahan", "Una", "Kangra", "Baddi", "Nalagarh", "Paonta Sahib", "Sundarnagar"],
+			    "Jharkhand": ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro", "Deoghar", "Hazaribagh", "Giridih", "Ramgarh", "Phusro", "Medininagar", "Chirkunda", "Chaibasa", "Gumia", "Simdega", "Ghatshila"],
+			    "Karnataka": ["Bangalore", "Mysore", "Hubli", "Mangalore", "Belgaum", "Gulbarga", "Davangere", "Bellary", "Bijapur", "Shimoga", "Tumkur", "Raichur", "Bidar", "Hospet", "Hassan", "Gadag", "Robertson Pet", "Udupi", "Chitradurga", "Kolar", "Mandya", "Chikmagalur", "Bhadravati", "Bagalkot", "Chikballapur", "Karwar", "Ranebennur", "Sirsi", "Dandeli", "Athni", "Kundapura"],
+			    "Kerala": ["Thiruvananthapuram", "Kochi", "Kozhikode", "Kollam", "Thrissur", "Alappuzha", "Palakkad", "Kottayam", "Kanhangad", "Kannur", "Tirur", "Kasaragod", "Pathanamthitta", "Kunnamkulam", "Changanassery", "Punalur", "Neyyattinkara", "Taliparamba", "Malappuram", "Ottapalam", "Payyannur", "Kayamkulam", "Vatakara", "Cherthala"],
+			    "Madhya Pradesh": ["Indore", "Bhopal", "Jabalpur", "Gwalior", "Ujjain", "Sagar", "Ratlam", "Satna", "Dewas", "Murwara", "Rewa", "Katni", "Singrauli", "Burhanpur", "Khandwa", "Bhind", "Shivpuri", "Vidisha", "Chhindwara", "Hoshangabad", "Betul", "Sehore", "Seoni", "Balaghat", "Mandsaur", "Neemuch", "Shajapur", "Morena", "Guna", "Damoh", "Itarsi", "Nagda", "Shahdol"],
+			    "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Thane", "Nashik", "Kalyan-Dombivli", "Vasai-Virar", "Aurangabad", "Navi Mumbai", "Solapur", "Mira-Bhayandar", "Bhiwandi", "Amravati", "Nanded", "Kolhapur", "Sangli", "Jalgaon", "Akola", "Latur", "Malegaon", "Dhule", "Ahmednagar", "Chandrapur", "Parbhani", "Ichalkaranji", "Jalna", "Ambarnath", "Bhusawal", "Panvel", "Badlapur", "Beed", "Gondia", "Satara", "Barshi", "Yavatmal", "Achalpur", "Osmanabad", "Nandurbar", "Wardha", "Udgir", "Hinganghat", "Washim", "Pusad", "Sinnar", "Sangamner", "Shirpur-Warwade", "Shrirampur", "Ambajogai", "Malkapur", "Risod", "Dondaicha-Warwade", "Sailu", "Vaijapur", "Lonavla", "Akot"],
+			    "Manipur": ["Imphal", "Thoubal", "Kakching", "Churachandpur", "Senapati", "Ukhrul", "Tamenglong", "Bishnupur", "Jiribam", "Kangpokpi", "Moreh", "Moirang", "Nambol"],
+			    "Meghalaya": ["Shillong", "Tura", "Nongstoin", "Jowai", "Baghmara", "Williamnagar", "Resubelpara", "Mawkyrwat", "Nongpoh", "Mairang"],
+			    "Mizoram": ["Aizawl", "Lunglei", "Saiha", "Champhai", "Serchhip", "Kolasib", "Lawngtlai", "Mamit", "Bairabi"],
+			    "Nagaland": ["Kohima", "Dimapur", "Mokokchung", "Tuensang", "Wokha", "Mon", "Zunheboto", "Phek", "Kiphire", "Longleng", "Peren", "Tuli", "Chumukedima", "Tseminyu"],
+			    "Odisha": ["Bhubaneswar", "Cuttack", "Rourkela", "Berhampur", "Sambalpur", "Puri", "Balasore", "Baripada", "Bhadrak", "Jharsuguda", "Bargarh", "Angul", "Dhenkanal", "Rayagada", "Paradip", "Jeypore", "Bhawanipatna", "Kendrapara", "Phulbani", "Sundargarh", "Nabarangpur", "Boudh", "Koraput"],
+			    "Punjab": ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Bathinda", "Hoshiarpur", "Mohali", "Batala", "Pathankot", "Moga", "Abohar", "Malerkotla", "Khanna", "Phagwara", "Muktsar", "Barnala", "Rajpura", "Firozpur", "Gobindgarh", "Fazilka", "Kapurthala", "Faridkot", "Mansa", "Jagraon", "Sangrur", "Nakodar"],
+			    "Rajasthan": ["Jaipur", "Jodhpur", "Udaipur", "Kota", "Bikaner", "Ajmer", "Bhilwara", "Alwar", "Bharatpur", "Sikar", "Pali", "Sri Ganganagar", "Bundi", "Churu", "Banswara", "Barmer", "Tonk", "Chittorgarh", "Kishangarh", "Hanumangarh", "Sawai Madhopur", "Nagaur", "Beawar", "Dungarpur", "Jaisalmer", "Pratapgarh", "Jhunjhunu", "Jhalawar", "Sirohi", "Phalodi"],
+			    "Sikkim": ["Gangtok", "Namchi", "Gyalshing", "Rangpo", "Mangan", "Pelling", "Ravangla", "Jorethang"],
+			    "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Tiruppur", "Erode", "Vellore", "Thoothukudi", "Nagercoil", "Thanjavur", "Dindigul", "Cuddalore", "Tirunelveli", "Kanchipuram", "Karur", "Hosur", "Neyveli", "Nagapattinam", "Vaniyambadi", "Kumarapalayam", "Udhagamandalam", "Ambur", "Pudukkottai", "Sivakasi", "Viluppuram", "Arakkonam", "Paramakudi", "Tiruchengode", "Gudiyatham", "Tiruvannamalai", "Pollachi", "Sankarankovil", "Panruti", "Nagapattinam", "Aruppukkottai"],
+			    "Telangana": ["Hyderabad", "Warangal", "Nizamabad", "Karimnagar", "Khammam", "Ramagundam", "Mahbubnagar", "Nalgonda", "Adilabad", "Suryapet", "Miryalaguda", "Jagtial", "Mancherial", "Kamareddy", "Siddipet", "Bodhan", "Palwancha", "Bellampalli", "Kothagudem", "Nirmal", "Wanaparthy"],
+			    "Tripura": ["Agartala", "Udaipur", "Kailashahar", "Dharmanagar", "Belonia", "Khowai", "Amarpur", "Sonamura", "Melaghar", "Ambassa", "Bishalgarh"],
+			    "Uttar Pradesh": ["Lucknow", "Kanpur", "Varanasi", "Agra", "Meerut", "Allahabad", "Bareilly", "Aligarh", "Moradabad", "Saharanpur", "Gorakhpur", "Noida", "Firozabad", "Jhansi", "Muzaffarnagar", "Mathura", "Rampur", "Shahjahanpur", "Faizabad", "Sitapur", "Farrukhabad", "Mau", "Hapur", "Etawah", "Mirzapur", "Bulandshahr", "Sambhal", "Amroha", "Hardoi", "Azamgarh", "Lakhimpur", "Raebareli", "Budaun", "Unnao", "Hathras", "Jaunpur", "Fatehpur", "Barabanki", "Ambedkar Nagar", "Deoria", "Ballia", "Mainpuri", "Lalitpur", "Gonda", "Bahraich", "Basti", "Kushinagar", "Sultanpur", "Kannauj", "Raebareli", "Bijnor", "Sultanpur", "Ghazipur", "Shamli", "Ghazipur", "Barabanki", "Amroha", "Faizabad", "Etah", "Kushinagar", "Rae Bareli", "Bahraich", "Banda", "Lakhimpur", "Raebareli", "Bahraich", "Ballia", "Jaunpur", "Siddharthnagar", "Sitapur", "Sultanpur", "Maharajganj", "Mirzapur", "Sant Kabir Nagar", "Badaun"],
+			    "Uttarakhand": ["Dehradun", "Haridwar", "Roorkee", "Haldwani", "Rudrapur", "Kashipur", "Rishikesh", "Pithoragarh", "Mussoorie", "Nainital", "Almora", "Kotdwar", "Manglaur"],
+			    "West Bengal": ["Kolkata", "Howrah", "Durgapur", "Asansol", "Siliguri", "Maheshtala", "Rajpur Sonarpur", "South Dumdum", "Rajarhat", "Bidhannagar", "Kamarhati", "Baranagar", "Bhatpara", "Panihati", "Chandannagar", "Bongaon", "North Dumdum", "Kanchrapara", "Habra", "Bansberia", "Dhulian", "Haldia", "Krishnanagar", "Nabadwip", "Medinipur", "Jalpaiguri", "Balurghat", "Barasat", "Purulia", "Bankura", "Raiganj", "Alipurduar", "Contai", "Basirhat", "Gopalpur", "Rampurhat"],
+			    "Andaman and Nicobar Islands": ["Port Blair"],
+			    "Chandigarh": ["Chandigarh"],
+			    "Dadra and Nagar Haveli": ["Silvassa"],
+			    "Daman and Diu": ["Daman"],
+			    "Delhi": ["New Delhi", "Delhi"],
+			    "Lakshadweep": ["Kavaratti"],
+			    "Puducherry": ["Puducherry", "Karaikal", "Yanam", "Mahe"]
+			};
+
+
+            var cities = citiesByState[state] || [];
+
+            for (var i = 0; i < cities.length; i++) {
+                var option = document.createElement("option");
+                option.value = cities[i];
+                option.text = cities[i];
+                citySelect.appendChild(option);
+            }
+        }
+
+        function checkPhoneNumber() {
+            var phoneInput = document.getElementById("customerMobileNo");
+            var phoneError = document.getElementById("phoneError");
+            var phoneNumber = phoneInput.value;
+            var phonePattern = /^[0-9]{10}$/;
+
+            if (!phonePattern.test(phoneNumber)) {
+                phoneError.textContent = "Invalid phone number. Please enter a 10-digit number.";
+                phoneInput.classList.add("error");
+                return false;
+            } else {
+                phoneError.textContent = "";
+                phoneInput.classList.remove("error");
+                return true;
+            }
+        }
+
+        function validateForm() {
+            return checkPhoneNumber();
+        }
+    </script>
+</body>
+</html>

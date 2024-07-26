@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Money Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+        #Money_b {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            margin: 0 auto;
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+        }
+        input[type="text"],
+        input[type="date"] {
+            width: calc(100% - 10px);
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 130px; /* Ensure button aligns with input fields */
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h2>Money Form</h2>
+    <div id="Money_b">
+        <form th:action="@{/submit_money}" method="post">
+            
+            <input type="hidden" id="id" name="id" readonly><br>
+            
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" th:required="true"><br>
+            
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" th:required="true"><br>
+            
+			<label for="borrowedAmount">Borrowed Amount:</label>
+			<input type="text" id="borrowedAmount" name="borrowedAmount" th:required="true" oninput="calculateTotal()"><br>
+
+			<label for="paidAmount">Paid Amount:</label>
+			<input type="text" id="paidAmount" name="paidAmount" th:required="true" oninput="calculateTotal()"><br>
+			
+			<label for="remainingAmount">Remaining Amount:</label>
+			<input type="text" id="remainingAmount" name="remainingAmount" th:required="true" readonly><br>
+
+			<label for="totalAmount">Total Amount:</label>
+			<input type="text" id="totalAmount" name="totalAmount" th:required="true" readonly><br>
+            
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" th:required="true"><br>
+            
+            <label for="reason">Reason:</label>
+            <input type="text" id="reason" name="reason" th:required="true"><br>
+            
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+	
+	
+	<script>
+	    function calculateTotal() {
+	        // Get the values of borrowedAmount and paidAmount
+	        var borrowedAmount = parseFloat(document.getElementById('borrowedAmount').value) || 0;
+	        var paidAmount = parseFloat(document.getElementById('paidAmount').value) || 0;
+	        
+	        // Calculate the total amount
+	        var totalAmount = paidAmount;
+			
+			var remainingAmount =  borrowedAmount - totalAmount
+			
+	         
+	        // Update the value of totalAmount input field
+	        document.getElementById('totalAmount').value = totalAmount.toFixed(2); // Adjust to your formatting needs
+			document.getElementById('remainingAmount').value = remainingAmount.toFixed(2);
+			
+	    }
+	</script>
+
+</body>
+</html>

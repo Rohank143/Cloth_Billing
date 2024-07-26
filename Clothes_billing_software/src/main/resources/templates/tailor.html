@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Tailor Information Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+        }
+
+        #tailorform {
+            width: 100%;
+            max-width: 600px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select,
+        input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* Hidden success message */
+        .success-message {
+            display: none;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+
+        /* Error message style */
+        .error-message {
+            color: red;
+            margin-top: 5px;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-danger {
+            color: #721c24; /* Dark red color */
+            background-color: #f8d7da; /* Light red background color */
+            border-color: #f5c6cb; /* Light red border color */
+        }
+    </style>
+</head>
+<body>
+<div id="tailorform">
+    <h2>Tailor Information Form</h2>
+
+    <div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <form action="#" th:action="@{/SaveTailor}" th:object="${tailor}" method="post" onsubmit="return showSuccessMessage()">
+        <input type="hidden" th:field="*{Tailor_id}">
+
+        <label for="TailorName">Name:</label>
+        <input type="text" id="TailorName" th:field="*{Tailor_name}" required><br>
+
+        <label for="Shop_name">ShopName:</label>
+        <input type="text" id="Shop_name" th:field="*{Shop_name}" required><br>
+
+        <label for="TailorState">State:</label>
+        <select id="stateSelect" th:field="*{Tailor_State}" onchange="populateCities()" required>
+            <option value="">Select a state</option>
+            <!-- Add options for states here -->
+			
+			               <option value="Andhra Pradesh">Andhra Pradesh</option>
+			               <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+			               <option value="Assam">Assam</option>
+			               <option value="Bihar">Bihar</option>
+			               <option value="Chhattisgarh">Chhattisgarh</option>
+			               <option value="Goa">Goa</option>
+			               <option value="Gujarat">Gujarat</option>
+			               <option value="Haryana">Haryana</option>
+			               <option value="Himachal Pradesh">Himachal Pradesh</option>
+			               <option value="Jharkhand">Jharkhand</option>
+			               <option value="Karnataka">Karnataka</option>
+			               <option value="Kerala">Kerala</option>
+			               <option value="Madhya Pradesh">Madhya Pradesh</option>
+			               <option value="Maharashtra">Maharashtra</option>
+			               <option value="Manipur">Manipur</option>
+			               <option value="Meghalaya">Meghalaya</option>
+			               <option value="Mizoram">Mizoram</option>
+			               <option value="Nagaland">Nagaland</option>
+			               <option value="Odisha">Odisha</option>
+			               <option value="Punjab">Punjab</option>
+			               <option value="Rajasthan">Rajasthan</option>
+			               <option value="Sikkim">Sikkim</option>
+			               <option value="Tamil Nadu">Tamil Nadu</option>
+			               <option value="Telangana">Telangana</option>
+			               <option value="Tripura">Tripura</option>
+			               <option value="Uttar Pradesh">Uttar Pradesh</option>
+			               <option value="Uttarakhand">Uttarakhand</option>
+			               <option value="West Bengal">West Bengal</option>
+			               <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+			               <option value="Chandigarh">Chandigarh</option>
+			               <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+			               <option value="Daman and Diu">Daman and Diu</option>
+			               <option value="Delhi">Delhi</option>
+			               <option value="Lakshadweep">Lakshadweep</option>
+			               <option value="Puducherry">Puducherry</option>
+			           </select>
+			
+			
+        </select>
+
+        <label for="TailorCity">City:</label>
+        <select id="citySelect" th:field="*{Tailor_City}" required>
+            <option value="">Select a city</option>
+            <!-- Options for cities will be populated dynamically based on state selection -->
+        </select>
+
+        <label for="TailorAddress">Address:</label>
+        <input type="text" id="TailorAddress" th:field="*{Shop_address}" required><br>
+
+        <label for="TailorMobileNo">Mobile Number:</label>
+        <input type="text" id="TailorMobileNo" th:field="*{Mobile_no}" required>
+        <span id="phoneError" class="error-message"></span><br>
+
+        <label for="TailorType">Type:</label>
+        <select id="TailorType" th:field="*{Type}" required>
+            <option value="Regular">Regular</option>
+            <option value="Premium">New</option>
+        </select><br>
+
+        <label for="TailorDate">Date:</label>
+        <input type="date" id="TailorDate" th:field="*{Date}" required><br>
+
+        <button type="submit">Save</button>
+    </form>
+
+    <!-- Success message -->
+    <div class="success-message" id="successMessage">
+        Tailor saved successfully!
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /* Thymeleaf inline JavaScript for showing success message */
+	function showSuccessMessage() {
+	      var mobileNoInput = document.getElementById('TailorMobileNo');
+	      var phoneError = document.getElementById('phoneError');
+	      
+	      // Regular expression to check if the input is a 10-digit number
+	      var mobileNoPattern = /^\d{10}$/;
+
+	      if (!mobileNoPattern.test(mobileNoInput.value.trim())) {
+	          phoneError.innerHTML = 'Please enter a valid 10-digit mobile number.';
+	          return false;
+	      } else {
+	          phoneError.innerHTML = ''; // Clear any previous error message
+	      }
+
+	      return true;
+	  }
+
+    function populateCities() {
+        var stateSelect = document.getElementById("stateSelect");
+        var citySelect = document.getElementById("citySelect");
+        var state = stateSelect.value;
+
+        // Clear previous options
+        citySelect.innerHTML = '<option value="">Select a city</option>';
+
+        // Populate cities based on selected state
+        switch (state) {
+            case "Andhra Pradesh":
+                var cities = ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore", "Kurnool", "Rajahmundry", "Tirupati", "Kakinada", "Anantapur", "Kadapa", "Eluru", "Ongole", "Vizianagaram", "Tenali", "Proddatur", "Adoni", "Machilipatnam", "Chittoor", "Hindupur"];
+                break;
+            case "Arunachal Pradesh":
+                var cities = ["Itanagar", "Naharlagun", "Pasighat", "Namsai", "Changlang", "Bomdila", "Tezu", "Tawang", "Ziro", "Khonsa"];
+                break;
+            case "Assam":
+                var cities = ["Guwahati", "Dibrugarh", "Silchar", "Jorhat", "Nagaon", "Tinsukia", "Tezpur", "Diphu", "North Lakhimpur", "Karimganj", "Sivasagar", "Goalpara", "Barpeta", "Dhubri", "Mangaldoi", "Nalbari", "Bongaigaon", "Dhemaji", "Lanka", "Bilasipara"];
+                break;
+            case "Bihar":
+                var cities = ["Patna", "Gaya", "Bhagalpur", "Muzaffarpur", "Purnia", "Darbhanga", "Arrah", "Begusarai", "Katihar", "Munger", "Chhapra", "Danapur", "Bettiah", "Saharsa", "Sasaram", "Hajipur", "Dehri", "Siwan", "Motihari", "Nawada"];
+                break;
+            case "Chhattisgarh":
+                var cities = ["Raipur", "Bhilai", "Bilaspur", "Korba", "Rajnandgaon", "Raigarh", "Jagdalpur", "Ambikapur", "Dhamtari", "Durg", "Mahasamund", "Bhatapara", "Chirmiri", "Dalli-Rajhara", "Dongargarh", "Janjgir", "Kawardha", "Kanker", "Kharsia", "Kondagaon"];
+                break;
+            case "Goa":
+                var cities = ["Panaji", "Vasco da Gama", "Margao", "Mapusa", "Ponda", "Bicholim", "Curchorem", "Cuncolim", "Valpoi", "Sanguem"];
+                break;
+            case "Gujarat":
+                var cities = ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", "Junagadh", "Gandhinagar", "Nadiad", "Mehsana", "Anand", "Bharuch", "Porbandar", "Godhra", "Valsad", "Palanpur", "Botad", "Veraval", "Vyara", "Dahod"];
+                break;
+            case "Haryana":
+                var cities = ["Faridabad", "Gurgaon", "Panipat", "Sonipat", "Yamunanagar", "Rohtak", "Hisar", "Karnal", "Ambala", "Panchkula", "Bhiwani", "Sirsa", "Bahadurgarh", "Jind", "Thanesar", "Kaithal", "Rewari", "Palwal", "Hansi", "Narnaul"];
+                break;
+            case "Himachal Pradesh":
+                var cities = ["Shimla", "Solan", "Dharamsala", "Mandi", "Kullu", "Palampur", "Chamba", "Una", "Sirmaur", "Bilaspur", "Nahan", "Hamirpur", "Kangra", "Mandi", "Dalhousie", "Keylong", "Manali", "Nurpur"];
+                break;
+            case "Jammu and Kashmir":
+                var cities = ["Srinagar", "Jammu", "Anantnag", "Baramulla", "Kathua", "Sopore", "Bandipora", "Pulwama", "Udhampur", "Kupwara", "Rajouri", "Punch", "Leh", "Kargil", "Kishtwar", "Ramban", "Budgam", "Doda", "Ganderbal", "Reasi"];
+                break;
+            case "Jharkhand":
+                var cities = ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro Steel City", "Deoghar", "Phusro", "Hazaribagh", "Giridih", "Ramgarh", "Medininagar", "Chirkunda", "Jhumri Tilaiya", "Sahibganj", "Dumka", "Chaibasa", "Jamtara", "Garhwa", "Bokaro", "Chatra", "Godda"];
+                break;
+            case "Karnataka":
+                var cities = ["Bangalore", "Mysore", "Hubli-Dharwad", "Mangalore", "Belgaum", "Gulbarga", "Davanagere", "Bellary", "Bijapur", "Shimoga", "Tumkur", "Raichur", "Bidar", "Hospet", "Hassan", "Gadag-Betageri", "Udupi", "Robertson Pet", "Bhadravati", "Chitradurga"];
+                break;
+            case "Kerala":
+                var cities = ["Thiruvananthapuram", "Kochi", "Kozhikode", "Kollam", "Thrissur", "Kannur", "Alappuzha", "Palakkad", "Kottayam", "Manjeri", "Kasaragod", "Kasaragod", "Attingal", "Pathanamthitta", "Malappuram", "Kottarakara", "Thalassery", "Ponnani", "Vatakara", "Neyyattinkara"];
+                break;
+            case "Madhya Pradesh":
+                var cities = ["Indore", "Bhopal", "Jabalpur", "Gwalior", "Ujjain", "Sagar", "Dewas", "Satna", "Ratlam", "Rewa", "Murwara (Katni)", "Singrauli", "Burhanpur", "Khandwa", "Morena", "Bhind", "Chhindwara", "Guna", "Shivpuri", "Vidisha"];
+                break;
+            case "Maharashtra":
+                var cities = ["Mumbai", "Pune", "Nagpur", "Thane", "Pimpri-Chinchwad", "Nashik", "Kalyan-Dombivli", "Vasai-Virar", "Aurangabad", "Navi Mumbai", "Solapur", "Mira-Bhayandar", "Bhiwandi", "Amravati", "Nanded", "Kolhapur", "Akola", "Ulhasnagar", "Sangli-Miraj & Kupwad", "Malegaon", "Jalgaon"];
+                break;
+            case "Manipur":
+                var cities = ["Imphal", "Thoubal", "Lilong", "Mayang Imphal", "Bishnupur", "Kakching", "Jiribam", "Ukhrul", "Chandel", "Nambol", "Kangpokpi", "Senapati", "Tamenglong"];
+                break;
+            case "Meghalaya":
+                var cities = ["Shillong", "Tura", "Nongstoin", "Jowai", "Baghmara", "Williamnagar", "Nongpoh", "Resubelpara", "Khliehriat", "Mankachar"];
+                break;
+            case "Mizoram":
+                var cities = ["Aizawl", "Lunglei", "Saiha", "Champhai", "Kolasib", "Serchhip", "Lawngtlai", "Biate", "Khawzawl"];
+                break;
+            case "Nagaland":
+                var cities = ["Kohima", "Dimapur", "Mokokchung", "Tuensang", "Wokha", "Zunheboto", "Phek", "Zunheboto", "Longleng", "Kiphire"];
+                break;
+            case "Odisha":
+                var cities = ["Bhubaneswar", "Cuttack", "Rourkela", "Berhampur", "Sambalpur", "Puri", "Balasore", "Bhadrak", "Baripada", "Jharsuguda", "Jeypore", "Bargarh", "Rayagada", "Bolangir", "Boudh", "Angul", "Dhenkanal", "Kendujhar", "Paradip"];
+                break;
+            case "Punjab":
+                var cities = ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Bathinda", "S.A.S. Nagar", "Hoshiarpur", "Pathankot", "Moga", "Abohar", "Batala", "Barnala", "Firozpur", "Kapurthala", "Mohali", "Muktasar", "Barnala", "Rajpura", "Zirakpur", "Fazilka"];
+                break;
+            case "Rajasthan":
+                var cities = ["Jaipur", "Jodhpur", "Kota", "Bikaner", "Ajmer", "Udaipur", "Bhilwara", "Alwar", "Bharatpur", "Sri Ganganagar", "Pali", "Chittorgarh", "Sikar", "Barmer", "Tonk", "Kishangarh", "Beawar", "Hanumangarh", "Dausa", "Nagaur"];
+                break;
+            case "Sikkim":
+                var cities = ["Gangtok", "Namchi", "Gyalshing", "Rangpo", "Jorethang", "Singtam", "Mangan", "Naya Bazar", "Ravangla"];
+                break;
+            case "Tamil Nadu":
+                var cities = ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Tiruppur", "Erode", "Vellore", "Thoothukkudi", "Dindigul", "Thanjavur", "Ranipet", "Sivakasi", "Karur", "Udhagamandalam", "Kanchipuram", "Nagercoil", "Hosur", "Pollachi", "Rajapalayam"];
+                break;
+            case "Telangana":
+                var cities = ["Hyderabad", "Warangal", "Nizamabad", "Khammam", "Karimnagar", "Ramagundam", "Mahbubnagar", "Nalgonda", "Adilabad", "Suryapet", "Miryalaguda", "Jagtial", "Nirmal", "Kamareddy", "Medak", "Sangareddy", "Bodhan", "Mancherial", "Vikarabad", "Wanaparthy"];
+                break;
+            case "Tripura":
+                var cities = ["Agartala", "Udaipur", "Dharmanagar", "Kailasahar", "Ambassa", "Khowai", "Belonia", "Teliamura", "Santirbazar"];
+                break;
+            case "Uttar Pradesh":
+                var cities = ["Lucknow", "Kanpur", "Agra", "Ghaziabad", "Meerut", "Varanasi", "Allahabad", "Bareilly", "Aligarh", "Moradabad", "Saharanpur", "Gorakhpur", "Noida", "Firozabad", "Jhansi", "Muzaffarnagar", "Mathura", "Rampur", "Shahjahanpur", "Farrukhabad"];
+                break;
+            case "Uttarakhand":
+                var cities = ["Dehradun", "Haridwar", "Roorkee", "Haldwani", "Rudrapur", "Kashipur", "Rishikesh", "Ramnagar", "Manglaur", "Kotdwara", "Pithoragarh", "Jaspur", "Sitarganj", "Bageshwar", "Nainital", "Mussoorie", "Tehri"];
+                break;
+            case "West Bengal":
+                var cities = ["Kolkata", "Asansol", "Siliguri", "Durgapur", "Bardhaman", "English Bazar", "Baharampur", "Habra", "Kharagpur", "Shantipur", "Dankuni", "Dhulian", "Ranaghat", "Haldia", "Raiganj", "Krishnanagar", "Nabadwip", "Midnapore", "Jalpaiguri", "Balurghat"];
+                break;
+            default:
+                var cities = [];
+                break;
+        }
+
+        // Add cities to the city select dropdown
+        cities.forEach(function (city) {
+            var option = document.createElement("option");
+            option.text = city;
+            option.value = city;
+            citySelect.appendChild(option);
+        });
+    }
+
+    // Trigger population of cities on page load (if editing existing tailor)
+    document.addEventListener('DOMContentLoaded', function () {
+        populateCities();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width = device-width, initial-scale = 1, shrink-to-fit=no">
+    <title>Stock Information Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('/2.jpg'); /* Replace with your image path */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            color: #333; /* Text color */
+            padding: 20px;
+            margin: 0;
+        }
+
+        #stockForm {
+            max-width: 600px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Shadow effect */
+        }
+
+        h2 {
+            text-align: center;
+            color: #555;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 100px;
+        }
+
+        button {
+            background-color: #4CAF50; /* Green background */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+        }
+
+        button:hover {
+            background-color: #45a049; /* Darker green hover color */
+        }
+
+        /* Success message box */
+        .success-message {
+            display: none;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="stockForm">
+        <h2>Stock Information Form</h2>
+        <form th:action="@{/SaveStock}" th:object="${stock}" method="post" enctype="multipart/form-data" onsubmit="showSuccessMessage()">
+            
+            <label for="productName">Product Name:</label><br>
+            <input type="text" id="productName" th:field="*{product_name}" required><br><br>
+              
+            <label for="productDistributor">Product Distributor:</label><br>
+            <input type="text" id="productDistributor" th:field="*{product_distributor}"><br><br>
+            
+            <label for="productType">Product Type:</label><br>
+            <input type="text" id="productType" th:field="*{product_type}"><br><br>
+            
+            <label for="productDescription">Product Description:</label><br>
+            <textarea id="productDescription" th:field="*{product_description}"></textarea><br><br>
+            
+            <label for="productQuantity">Product Quantity:</label><br>
+            <input type="number" id="productQuantity" th:field="*{product_quantity}" min="0" required><br><br>
+            
+            <label for="productRate">Product Rate:</label><br>
+            <input type="number" id="productRate" th:field="*{product_rate}" min="0" required><br><br>
+            
+            <button type="submit">Save</button>
+        </form>
+
+        <!-- Success message display -->
+        <div id="successMessage" class="success-message">
+            Your data has been saved successfully.
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /* JavaScript function to show success message */
+        function showSuccessMessage() {
+            document.getElementById('successMessage').style.display = 'block';
+            setTimeout(function() {
+                document.getElementById('successMessage').style.display = 'none';
+            }, 10000); // Hide after 10 seconds (10000 milliseconds)
+        }
+    </script>
+</body>
+</html>

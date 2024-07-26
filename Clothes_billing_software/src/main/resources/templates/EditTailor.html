@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Customer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            margin: 0 auto;
+        }
+        p {
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            width: calc(100% - 6px);
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h2>Edit Tailor</h2>
+    <form th:action="@{/updateTailor/{id}(id=${tailor.tailor_id})}" method="post" th:object="${tailor}">
+        <input type="hidden" th:field="*{tailor_id}">
+        <p>Name: <input type="text" th:field="*{tailor_name}"></p>
+        <p>Shop Name: <input type="text" th:field="*{shop_name}"></p>
+        <p>Shop Address: <input type="text" th:field="*{shop_address}"></p>
+        <p>Mobile Number: <input type="text" th:field="*{mobile_no}"></p>
+        <p>Type: <input type="text" th:field="*{type}"></p>
+        <p>Date: <input type="text" th:field="*{date}" placeholder="yyyy-MM-dd"></p>
+        <p><input type="submit" value="Save Changes"></p>
+    </form>
+</body>
+</html>
